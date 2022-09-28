@@ -1,18 +1,22 @@
 {
   "name": "enotes",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"npm:start:renderer\" \"npm:start:preload\" \"npm:start:main\"",
-    "start:renderer": "parcel public/template.html",
-    "start:preload": "node config/preload.mjs",
-    "start:main": "node config/main.mjs && electron ."
+    "start:renderer": "cross-env NODE_ENV=development parcel public/template.html",
+    "start:preload": "cross-env NODE_ENV=development node config/preload.mjs",
+    "start:main": "cross-env NODE_ENV=development node config/main.mjs && electron dist/index.js",
+    "build": "concurrently \"npm:build:renderer\" \"npm:build:preload\" \"npm:build:main\"",
+    "build:renderer": "cross-env NODE_ENV=production parcel build public/template.html",
+    "build:preload": "cross-env NODE_ENV=development node config/preload.mjs",
+    "build:main": "cross-env NODE_ENV=production node config/main.mjs"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "concurrently": "^7.4.0",
+    "cross-env": "^7.0.3",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "typescript": "^4.8.3"
