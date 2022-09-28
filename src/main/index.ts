@@ -1,4 +1,10 @@
-import { app, BrowserWindow } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  MessageBoxOptions,
+} from "electron";
 import path from "path";
 
 function createWindow() {
@@ -29,5 +35,9 @@ app.whenReady().then(() => {
 
   win.webContents.openDevTools({
     mode: "detach",
+  });
+
+  ipcMain.handle("showMessage", (e, options: MessageBoxOptions) => {
+    dialog.showMessageBox(win, options);
   });
 });

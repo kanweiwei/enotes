@@ -1,7 +1,7 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer, MessageBoxOptions } from "electron";
 
 contextBridge.exposeInMainWorld("Bridge", {
-  test: () => {
-    console.log("bridge is working");
+  showMessage: (options: MessageBoxOptions) => {
+    ipcRenderer.invoke("showMessage", options);
   },
 });
