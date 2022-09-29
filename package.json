@@ -10,16 +10,19 @@
     "build": "concurrently \"npm:build:renderer\" \"npm:build:preload\" \"npm:build:main\"",
     "build:renderer": "cross-env NODE_ENV=production parcel build public/template.html",
     "build:preload": "cross-env NODE_ENV=development node config/preload.mjs",
-    "build:main": "cross-env NODE_ENV=production node config/main.mjs"
+    "build:main": "cross-env NODE_ENV=production node config/main.mjs",
+    "test": "vitest"
   },
   "devDependencies": {
+    "@types/node": "^18.7.23",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.3",
+    "vitest": "^0.23.4"
   },
   "dependencies": {
     "electron": "^21.0.0",

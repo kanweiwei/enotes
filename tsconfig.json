@@ -33,7 +33,7 @@
     // "paths": {},                                      /* 指定一组将导入重新映射到其他查找位置的条目。 */
     // "rootDirs": [],                                   /* 允许在解析模块时将多个文件夹视为一个文件夹。 */
     // "typeRoots": [],                                  /* 指定多个行为类似于 “./node_modules/@types” 的文件夹。 */
-    // "types": [],                                      /* 指定要包含的类型包名称，而无需在源文件中引用。 */
+    "types": ["node"],                                      /* 指定要包含的类型包名称，而无需在源文件中引用。 */
     // "allowUmdGlobalAccess": true,                     /* 允许从模块访问 UMD 变量全局。 */
     // "moduleSuffixes": [],                             /* 解析模块时要搜索的文件名后缀列表。 */
     // "resolveJsonModule": true,                        /* 启用导入 .json 文件。 */
