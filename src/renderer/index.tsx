@@ -1,8 +1,11 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
+import { Editor } from "./views/Editor";
+
+import "./global.less";
 
 const App = () => {
-  return <h1>Welcome to use ENotes</h1>;
+  return <Editor />;
 };
 
 ReactDom.render(<App />, document.getElementById("root"));
