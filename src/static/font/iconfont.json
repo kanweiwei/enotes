@@ -1,0 +1,37 @@
+{
+  "id": "3793221",
+  "name": "enotes",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-enotes-",
+  "description": "笔记本",
+  "glyphs": [
+    {
+      "icon_id": "11975177",
+      "name": "加粗",
+      "font_class": "jiacu",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "11975698",
+      "name": "下划线",
+      "font_class": "xiahuaxian",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "11975700",
+      "name": "斜体",
+      "font_class": "xieti",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "11975951",
+      "name": "image",
+      "font_class": "zu",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    }
+  ]
+}

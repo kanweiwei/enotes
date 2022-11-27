@@ -58,7 +58,15 @@ function useSaveHook() {
 
 const hooks = [useSaveHook];
 
-const Menu = () => <button onClick={() => alert("button b")}>B</button>;
+const Menu = () => {
+  return (
+    <div className="editor-menu">
+      <span className="icon iconfont icon-enotes-jiacu"></span>
+      <span className="icon iconfont icon-enotes-xieti"></span>
+      <span className="icon iconfont icon-enotes-xiahuaxian"></span>
+    </div>
+  );
+};
 
 export const Markdown = () => {
   const { manager, state } = useRemirror({
