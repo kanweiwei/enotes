@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "jsx": "react",
     /* 请访问 https://aka.ms/tsconfig，了解有关此文件的详细信息 */
 
