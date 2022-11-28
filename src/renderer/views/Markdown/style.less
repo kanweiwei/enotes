@@ -1,5 +1,6 @@
 .remirror-container {
   height: 100%;
+  @apply flex-auto;
   .remirror-editor-wrapper {
     height: 100%;
     padding: 16px;
@@ -10,18 +11,18 @@
       }
     }
   }
-}
 
-.editor-menu {
-  padding: 8px 8px;
-  border-radius: 6px 6px 0 0;
-  border-bottom: 1px solid #eee;
-  .icon {
-    padding: 8px 8px;
-    border-radius: 4px;
-    @apply cursor-pointer;
-    &:hover {
-      background: #eee;
+  .editor-menu {
+    @apply flex flex-row flex-nowrap items-center p-2;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid #eee;
+    .icon {
+      padding: 8px 8px;
+      border-radius: 4px;
+      @apply cursor-pointer;
+      &:hover {
+        background: #eee;
+      }
     }
   }
 }

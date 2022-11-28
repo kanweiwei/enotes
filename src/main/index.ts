@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {
   app,
   BrowserWindow,
@@ -6,6 +7,9 @@ import {
   MessageBoxOptions,
 } from "electron";
 import path from "path";
+import { ioc } from "./ioc";
+import { LocalDB } from "./db/db";
+import { NotebooksController } from "./db/controllers/notebooks.controller";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -20,11 +24,7 @@ function createWindow() {
       preload: path.join(app.getAppPath(), "dist", "preload.js"),
     },
   });
-  return win;
-}
 
-app.whenReady().then(() => {
-  const win = createWindow();
   app.isPackaged
     ? win.loadFile(path.join(app.getAppPath(), "dist", "template.html"))
     : win.loadURL("http://localhost:1234");
@@ -37,7 +37,25 @@ app.whenReady().then(() => {
     mode: "detach",
   });
 
-  ipcMain.handle("showMessage", (e, options: MessageBoxOptions) => {
-    dialog.showMessageBox(win, options);
-  });
+  return win;
+}
+
+app.whenReady().then(async () => {
+  await ioc.get(LocalDB).init();
+  createWindow();
+});
+
+ipcMain.handle("showMessage", (e, options: MessageBoxOptions) => {
+  const win =
+    BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
+  if (!win) return;
+  dialog.showMessageBox(win, options);
+});
+
+ipcMain.handle("createNotebook", async (e, name: string) => {
+  return await ioc.get(NotebooksController).create(name);
+});
+
+ipcMain.handle("getNotebooks", async () => {
+  return await ioc.get(NotebooksController).getAll();
 });
