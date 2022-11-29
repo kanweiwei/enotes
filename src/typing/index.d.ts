@@ -4,5 +4,6 @@ declare interface Window {
     getNotebooks: () => Promise<
       { id: number; name: string; create_at: string; update_at: string }[]
     >;
+    deleteNotebook: (id: number) => Promise<void>
   };
 }

@@ -10,4 +10,7 @@ contextBridge.exposeInMainWorld("Bridge", {
   getNotebooks: () => {
     return ipcRenderer.invoke("getNotebooks");
   },
+  deleteNotebook: (id: number) => {
+    return ipcRenderer.invoke("deleteNotebook", id);
+  },
 });

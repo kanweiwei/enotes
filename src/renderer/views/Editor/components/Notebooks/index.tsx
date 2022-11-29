@@ -1,11 +1,11 @@
-import { PlusSquareOutlined } from "@ant-design/icons";
-import { Input } from "antd";
+import { MoreOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Menu, Modal } from "antd";
+import cls from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import {
   CreateNotebookModal,
   CreateNotebookModalRef,
 } from "../CreateNotebookModal";
-import cls from "classnames";
 import "./style.less";
 
 interface NotebookOutput {
@@ -18,7 +18,7 @@ interface NotebookOutput {
 export const Notebooks = () => {
   const [notebooks, setNotebooks] = useState<NotebookOutput[]>([]);
   const createModalRef = useRef<CreateNotebookModalRef | null>(null);
-  
+
   const handleCreateNotebook = async (name: string) => {
     await window.Bridge?.createNotebook(name);
     const data = await window.Bridge?.getNotebooks();
@@ -36,6 +36,28 @@ export const Notebooks = () => {
     }
   };
 
+  const handleDeleteNoteBook = async (data: NotebookOutput) => {
+    Modal.confirm({
+      title: "注意",
+      content: `是否删除该笔记本 ${data.name}`,
+      okText: "确认",
+      cancelText: "取消",
+      onOk: async () => {
+        try {
+          await window.Bridge?.deleteNotebook(data.id);
+          const arr = notebooks.slice();
+          const idx = arr.findIndex((n) => n.id == data.id);
+          if (idx > -1) {
+            arr.splice(idx, 1);
+            setNotebooks(arr);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    });
+  };
+
   useEffect(() => {
     void (async () => {
       const data = await window.Bridge?.getNotebooks();
@@ -48,17 +70,21 @@ export const Notebooks = () => {
   return (
     <div className="notebooks">
       <div className="notebooks_header">
-        <Input />
-        <PlusSquareOutlined
+        <Button
           className="create-notebook-btn"
+          icon={<PlusOutlined />}
+          type="primary"
           onClick={() => createModalRef.current?.setVisible(true)}
-        />
+        >
+          新建
+        </Button>
+
         <CreateNotebookModal
           ref={createModalRef}
           onCreateNotebook={handleCreateNotebook}
         />
       </div>
-      <div className="notebooks_list">
+      <div className="notebooks-list">
         {notebooks.map((n) => {
           const c = cls("notebook-item", {
             selected: selectedNotebookId == n.id,
@@ -70,7 +96,21 @@ export const Notebooks = () => {
               data-id={n.id}
               onClick={handleSelectNotebook}
             >
-              {n.name}
+              <span>{n.name}</span>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: "delete",
+                      danger: true,
+                      label: "删除笔记",
+                      onClick: () => handleDeleteNoteBook(n),
+                    },
+                  ],
+                }}
+              >
+                <MoreOutlined />
+              </Dropdown>
             </div>
           );
         })}

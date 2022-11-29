@@ -59,3 +59,7 @@ ipcMain.handle("createNotebook", async (e, name: string) => {
 ipcMain.handle("getNotebooks", async () => {
   return await ioc.get(NotebooksController).getAll();
 });
+
+ipcMain.handle("deleteNotebook", async (e, id: number) => {
+  return await ioc.get(NotebooksController).delete(id);
+});
