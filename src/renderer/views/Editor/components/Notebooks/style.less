@@ -13,17 +13,8 @@
   .notebooks-list {
     .notebook-item {
       @apply p-2 flex flex-row justify-between items-center m-2 rounded-md;
-      &:hover {
-        @apply cursor-pointer bg-blue-200 text-white;
-        .anticon {
-          @apply border-blue-200;
-          &:hover {
-            @apply border-blue-200;
-          }
-        }
-      }
-      &.selected {
-        @apply bg-blue-500 text-white;
+      &.selected,&:hover {
+        @apply bg-blue-500 text-white cursor-pointer;
         .anticon {
           @apply border-2 border-solid rounded-md border-blue-500;
           &:hover {
