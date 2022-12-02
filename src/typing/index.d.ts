@@ -1,9 +1,8 @@
 declare interface Window {
   Bridge?: {
     createNotebook: (name: string) => Promise<void>;
-    getNotebooks: () => Promise<
-      { id: number; name: string; create_at: string; update_at: string }[]
-    >;
-    deleteNotebook: (id: number) => Promise<void>
+    getNotebooks: () => Promise<import("../dtos/notebooks").NotebookOutput[]>;
+    deleteNotebook: (id: number) => Promise<void>;
+    getNotes: (id: number) => Promise<import("../dtos/notes").NoteOutput[]>;
   };
 }

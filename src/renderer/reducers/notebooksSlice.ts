@@ -4,13 +4,7 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-
-export interface NotebookOutput {
-  id: number;
-  name: string;
-  create_at: string;
-  update_at: string;
-}
+import { NotebookOutput } from "../../dtos/notebooks";
 
 export interface NotebooksSliceState {
   current: NotebookOutput | null;
