@@ -1,0 +1,180 @@
+/* reset */
+a,
+button {
+  all: unset;
+}
+
+ol,
+ul {
+  @apply pl-10;
+}
+.ToolbarRoot {
+  @apply flex w-full p-2 rounded bg-white shadow;
+}
+
+.ToolbarToggleItem,
+.ToolbarLink,
+.ToolbarButton {
+  @apply flex-none px-1 rounded inline-flex items-center justify-center rounded h-6 text-xs leading-3 text-slate-500;
+}
+.ToolbarToggleItem:hover,
+.ToolbarLink:hover,
+.ToolbarButton:hover {
+  @apply bg-slate-500 text-slate-300 cursor-pointer;
+}
+.ToolbarToggleItem:focus,
+.ToolbarLink:focus,
+.ToolbarButton:focus {
+  @apply relative shadow;
+}
+
+.ToolbarToggleItem {
+  @apply ml-1 bg-white;
+}
+.ToolbarToggleItem:first-child {
+  @apply ml-0;
+}
+.ToolbarToggleItem[data-state="on"] {
+  @apply bg-slate-500 text-slate-200;
+}
+
+.ToolbarSeparator {
+  @apply w-px bg-slate-400 mx-2;
+}
+
+.ToolbarLink {
+  @apply bg-transparent text-slate-600 inline-flex justify-center items-center;
+  &:hover {
+    @apply bg-transparent cursor-pointer;
+  }
+}
+
+.ToolbarButton {
+  @apply mx-2 text-slate-500 bg-slate-100 hover:bg-slate-600 hover:text-white;
+}
+
+.TooltipContent {
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--violet11);
+  background-color: white;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
+    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  user-select: none;
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.TooltipContent[data-state="delayed-open"][data-side="top"] {
+  animation-name: slideDownAndFade;
+}
+.TooltipContent[data-state="delayed-open"][data-side="right"] {
+  animation-name: slideLeftAndFade;
+}
+.TooltipContent[data-state="delayed-open"][data-side="bottom"] {
+  animation-name: slideUpAndFade;
+}
+.TooltipContent[data-state="delayed-open"][data-side="left"] {
+  animation-name: slideRightAndFade;
+}
+.TooltipArrow {
+  fill: white;
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.remirror-container {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  .remirror-editor-wrapper {
+    padding: 16px;
+    flex: auto;
+    overflow: auto;
+    margin-bottom: 20px;
+    & > div {
+      width: 600px;
+      margin: 0 auto;
+      min-height: 100%;
+      @media screen and (min-width: 1000px) {
+        width: 800px;
+      }
+      &:focus-visible {
+        outline: none;
+      }
+    }
+    .remirror-list-item-checkbox {
+      filter: hue-rotate(280deg);
+    }
+  }
+
+  .editor-menu {
+    @apply flex flex-row flex-nowrap items-center px-4 py-2;
+    border-radius: 6px 6px 0 0;
+    width: 600px;
+    margin: 0 auto;
+    @media screen and (min-width: 1000px) {
+      width: 800px;
+    }
+    .icon {
+      @apply cursor-pointer shadow mr-2 rounded p-2;
+      &.active {
+        @apply bg-slate-300;
+      }
+      &:hover {
+        @apply bg-slate-400;
+      }
+    }
+  }
+  .count-container {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 12px;
+    color: #333;
+  }
+}
