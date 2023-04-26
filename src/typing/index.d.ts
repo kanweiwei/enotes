@@ -4,4 +4,5 @@ declare interface Window {
     save: (filePath: string, content) => Promise<boolean>;
   };
   $$filePath$$?: string;
+  $$fileContent$$?: string;
 }

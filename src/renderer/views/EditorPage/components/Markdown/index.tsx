@@ -2,7 +2,7 @@ import React, {
   MouseEventHandler,
   useCallback,
   useContext,
-  useMemo,
+  useEffect,
 } from "react";
 import { TextSelection } from "@remirror/pm/state";
 import { Node as PMNode } from "@remirror/pm/model";
@@ -93,7 +93,7 @@ function useSaveHook() {
 const hooks = [useSaveHook];
 
 const Menu = () => {
-  const { toggleItalic, toggleMark } = useCommands();
+  const { toggleItalic, toggleMark, insertMarkdown } = useCommands();
   const helpers = useHelpers();
   const active = useActive();
   const { getState, schema, manager } = useRemirrorContext({
@@ -171,6 +171,28 @@ const Menu = () => {
         handleExport(e);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    function updateFileContent(content: string) {
+      manager.view.updateState(
+        state.apply(
+          state.tr.replaceWith(
+            0,
+            state.doc.content.size,
+            manager.createEmptyDoc()
+          )
+        )
+      );
+      insertMarkdown(content);
+    }
+    // @ts-ignore
+    const handler: EventListener = (evt: CustomEvent<{ content?: string }>) =>
+      updateFileContent(evt.detail.content || "");
+    window.addEventListener("updateFileContent", handler);
+    return () => {
+      window.removeEventListener("updateFileContent", handler);
+    };
   }, []);
 
   return (
@@ -329,7 +351,7 @@ function Footer() {
   return (
     <div className="footer">
       <div className="charsCount">chars: {getCharacterCount(getState())}</div>
-      <div className="filePath">{filePath || ""}</div>
+      <div className="filePath">{window.$$filePath$$ || filePath || ""}</div>
     </div>
   );
 }
@@ -352,7 +374,7 @@ export const Markdown = () => {
       new CodeBlockExtension(),
       new CountExtension(),
     ],
-    content: localStorage.getItem("data") || "",
+    content: window.$$fileContent$$ || localStorage.getItem("data") || "",
     selection: "start",
     stringHandler: "markdown",
   });
