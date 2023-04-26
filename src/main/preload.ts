@@ -7,4 +7,7 @@ contextBridge.exposeInMainWorld("Bridge", {
   save: (filePath: string, content: string) => {
     return ipcRenderer.invoke("save", filePath, content);
   },
+  getFileContent: (filePath: string) => {
+    return ipcRenderer.invoke("getFileContent", filePath);
+  },
 });

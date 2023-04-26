@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
 import { initBridge } from "./bridge";
+import { getMenu } from "./menu";
 
 Menu.setApplicationMenu(null);
 
@@ -36,4 +37,5 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
   initBridge();
+  Menu.setApplicationMenu(getMenu());
 });

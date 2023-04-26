@@ -187,11 +187,27 @@ const Menu = () => {
       insertMarkdown(content);
     }
     // @ts-ignore
-    const handler: EventListener = (evt: CustomEvent<{ content?: string }>) =>
-      updateFileContent(evt.detail.content || "");
-    window.addEventListener("updateFileContent", handler);
+    const updateFileContentHandler: EventListener = (
+      evt: CustomEvent<{ content?: string }>
+    ) => updateFileContent(evt.detail.content || "");
+    window.addEventListener("updateFileContent", updateFileContentHandler);
+
+    // @ts-ignore
+    const openFileHandler: EventListener = async (
+      e: CustomEvent<{ filePath: string }>
+    ) => {
+      if (window.Bridge) {
+        const content = await window.Bridge.getFileContent(e.detail.filePath);
+        window.$$filePath$$ = e.detail.filePath;
+        window.$$fileContent$$ = content;
+        updateFileContent(content);
+      }
+    };
+    window.addEventListener("openFile", openFileHandler);
+
     return () => {
-      window.removeEventListener("updateFileContent", handler);
+      window.removeEventListener("updateFileContent", updateFileContentHandler);
+      window.removeEventListener("openFile", openFileHandler);
     };
   }, []);
 

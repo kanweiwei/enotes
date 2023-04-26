@@ -38,4 +38,14 @@ export function initBridge() {
       return false;
     }
   });
+
+  ipcMain.handle("getFileContent", async (e, filePath: string) => {
+    let res = "";
+    try {
+      res = await promises.readFile(filePath, "utf-8");
+    } catch (error) {
+      console.error(error);
+    }
+    return res;
+  });
 }
