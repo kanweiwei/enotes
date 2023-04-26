@@ -1,4 +1,9 @@
-import React, { MouseEventHandler, useCallback } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import { TextSelection } from "@remirror/pm/state";
 import { Node as PMNode } from "@remirror/pm/model";
 import {
@@ -10,6 +15,7 @@ import {
   TextAlignLeftIcon,
   TextAlignRightIcon,
   UnderlineIcon,
+  PinBottomIcon,
 } from "@radix-ui/react-icons";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { CountExtension } from "@remirror/extension-count";
@@ -39,10 +45,15 @@ import {
 import * as Tooltip from "@radix-ui/react-tooltip";
 import "remirror/styles/all.css";
 import "./style.less";
+import { AppContext } from "~src/renderer/hooks/appContext";
 
-async function saveContent(content: string) {
-  // Fake API call
-  console.log(content);
+async function saveContent(content: string, filePath?: string) {
+  let res = true;
+  localStorage.setItem("data", content);
+  if (filePath && window.Bridge) {
+    res = await window.Bridge.save(filePath, content);
+  }
+  return res;
 }
 
 interface UseSaveHook {
@@ -63,9 +74,8 @@ function useSaveHook() {
     useCallback(() => {
       // Convert the editor content to markdown.
       const markdown = helpers.getMarkdown();
-
       setState({ saving: true, error: undefined });
-      saveContent(markdown)
+      saveContent(markdown, window.$$filePath$$)
         .then(() => {
           setState({ saving: false, error: undefined });
         })
@@ -83,11 +93,13 @@ function useSaveHook() {
 const hooks = [useSaveHook];
 
 const Menu = () => {
-  const { toggleItalic, toggleMark, insertNode, insertText } = useCommands();
+  const { toggleItalic, toggleMark } = useCommands();
+  const helpers = useHelpers();
   const active = useActive();
   const { getState, schema, manager } = useRemirrorContext({
     autoUpdate: true,
   });
+  const { updateFilePath } = useContext(AppContext);
   const state = getState();
 
   const insertList = useCallback(
@@ -138,6 +150,28 @@ const Menu = () => {
     },
     [state]
   );
+  const handleExport = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    void (async () => {
+      const filePath = await window.Bridge?.export(helpers.getMarkdown());
+
+      if (filePath) {
+        updateFilePath(filePath);
+        window.$$filePath$$ = filePath;
+      }
+    })();
+  }, []);
+
+  const handleSave = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    void (async () => {
+      if (window.$$filePath$$) {
+        await window.Bridge?.save(window.$$filePath$$, helpers.getMarkdown());
+      } else {
+        handleExport(e);
+      }
+    })();
+  }, []);
 
   return (
     <div className="editor-menu">
@@ -271,22 +305,31 @@ const Menu = () => {
           </Tooltip.Root>
         </Tooltip.Provider>
         <Toolbar.Button
-          className="ToolbarButton"
+          className="ToolbarButton saveBtn"
           style={{ marginLeft: "auto" }}
+          onMouseDown={handleSave}
         >
-          Share
+          Save
+        </Toolbar.Button>
+        <Toolbar.Button
+          className="ToolbarButton exportBtn"
+          onMouseDown={handleExport}
+        >
+          <PinBottomIcon />
         </Toolbar.Button>
       </Toolbar.Root>
     </div>
   );
 };
 
-function Count() {
+function Footer() {
   const { getCharacterCount } = useHelpers();
   const { getState } = useRemirrorContext({ autoUpdate: true });
+  const { filePath } = useContext(AppContext);
   return (
-    <div className="count-container">
-      chars: {getCharacterCount(getState())}
+    <div className="footer">
+      <div className="charsCount">chars: {getCharacterCount(getState())}</div>
+      <div className="filePath">{filePath || ""}</div>
     </div>
   );
 }
@@ -309,7 +352,7 @@ export const Markdown = () => {
       new CodeBlockExtension(),
       new CountExtension(),
     ],
-    content: "",
+    content: localStorage.getItem("data") || "",
     selection: "start",
     stringHandler: "markdown",
   });
@@ -319,7 +362,7 @@ export const Markdown = () => {
       <Remirror initialContent={state} manager={manager} hooks={hooks}>
         <Menu />
         <EditorComponent />
-        <Count />
+        <Footer />
       </Remirror>
     </div>
   );

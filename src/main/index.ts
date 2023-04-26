@@ -1,5 +1,9 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
+import { initBridge } from "./bridge";
+
+Menu.setApplicationMenu(null);
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
@@ -31,4 +35,5 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+  initBridge();
 });
