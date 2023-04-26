@@ -1,5 +1,5 @@
-import { AppContext } from "~src/renderer/hooks/appContext";
 import React, { useEffect, useState } from "react";
+import { AppContext } from "../../hooks/appContext";
 import { Markdown } from "./components/Markdown";
 import "./style.less";
 

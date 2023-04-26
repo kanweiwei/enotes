@@ -1,50 +1,10 @@
 {
-  "name": "enotes",
-  "version": "1.0.0",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "scripts": {
-    "start": "concurrently \"npm:start:renderer\" \"npm:start:preload\" \"npm:start:main\"",
-    "start:renderer": "cross-env NODE_ENV=development parcel public/template.html",
-    "start:preload": "cross-env NODE_ENV=development node config/preload.mjs",
-    "start:main": "cross-env NODE_ENV=development node config/main.mjs && electron .",
-    "build": "concurrently \"npm:build:renderer\" \"npm:build:preload\" \"npm:build:main\"",
-    "build:renderer": "cross-env NODE_ENV=production parcel build public/template.html",
-    "build:preload": "cross-env NODE_ENV=development node config/preload.mjs",
-    "build:main": "cross-env NODE_ENV=production node config/main.mjs",
-    "test": "vitest"
-  },
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
-    "@parcel/transformer-less": "^2.8.3",
-    "@types/node": "^18.7.23",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
-    "autoprefixer": "^10.4.12",
-    "buffer": "^5.5.0",
-    "concurrently": "^7.4.0",
-    "cross-env": "^7.0.3",
-    "path-browserify": "^1.0.1",
-    "postcss": "^8.0.9",
-    "postcss-import": "^15.0.0",
-    "process": "^0.11.10",
-    "tailwindcss": "^3.1.8",
-    "typescript": "^4.8.3",
-    "vitest": "^0.23.4"
-  },
-  "dependencies": {
-    "@radix-ui/colors": "^0.1.8",
-    "@radix-ui/react-icons": "^1.3.0",
-    "@radix-ui/react-toolbar": "^1.0.3",
-    "@radix-ui/react-tooltip": "^1.0.5",
-    "@reduxjs/toolkit": "^1.9.1",
-    "@remirror/extension-count": "^2.0.6",
-    "@remirror/pm": "^2.0.0",
-    "@remirror/react": "^2.0.11",
-    "classnames": "^2.3.2",
-    "electron": "^21.0.0",
-    "parcel": "^2.7.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "remirror": "^2.0.10"
+    "lerna": "^6.6.1"
   }
 }
