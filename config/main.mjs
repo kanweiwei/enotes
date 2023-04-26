@@ -7,7 +7,7 @@ let bundler = new Parcel({
   targets: {
     main: {
       distDir: "dist",
-      context: "electron-main"
+      context: "electron-main",
     },
   },
 });

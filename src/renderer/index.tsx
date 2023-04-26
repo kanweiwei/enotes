@@ -1,12 +1,10 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import { Editor } from "./views/Editor";
-
+import { EditorPage } from "./views/EditorPage";
 import "./global.less";
-import "../static/font/iconfont.css";
 
 const App = () => {
-  return <Editor />;
+  return <EditorPage />;
 };
 
 ReactDom.render(<App />, document.getElementById("root"));

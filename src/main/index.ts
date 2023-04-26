@@ -1,15 +1,8 @@
-import "reflect-metadata";
-import {
-  app,
-  BrowserWindow,
-  dialog,
-  ipcMain,
-  MessageBoxOptions,
-} from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
-import { ioc } from "./ioc";
-import { LocalDB } from "./db/db";
-import { NotebooksController } from "./db/controllers/notebooks.controller";
+import { initBridge } from "./bridge";
+
+Menu.setApplicationMenu(null);
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -40,22 +33,7 @@ function createWindow() {
   return win;
 }
 
-app.whenReady().then(async () => {
-  await ioc.get(LocalDB).init();
+app.whenReady().then(() => {
   createWindow();
-});
-
-ipcMain.handle("showMessage", (e, options: MessageBoxOptions) => {
-  const win =
-    BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
-  if (!win) return;
-  dialog.showMessageBox(win, options);
-});
-
-ipcMain.handle("createNotebook", async (e, name: string) => {
-  return await ioc.get(NotebooksController).create(name);
-});
-
-ipcMain.handle("getNotebooks", async () => {
-  return await ioc.get(NotebooksController).getAll();
+  initBridge();
 });

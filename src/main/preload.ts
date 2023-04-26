@@ -1,13 +1,10 @@
-import { contextBridge, ipcRenderer, MessageBoxOptions } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("Bridge", {
-  showMessage: (options: MessageBoxOptions) => {
-    ipcRenderer.invoke("showMessage", options);
+  export: (content: string) => {
+    return ipcRenderer.invoke("export", content);
   },
-  createNotebook: (name: string) => {
-    ipcRenderer.invoke("createNotebook", name);
-  },
-  getNotebooks: () => {
-    return ipcRenderer.invoke("getNotebooks");
+  save: (filePath: string, content: string) => {
+    return ipcRenderer.invoke("save", filePath, content);
   },
 });
