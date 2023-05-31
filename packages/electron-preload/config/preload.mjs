@@ -6,7 +6,7 @@ let bundler = new Parcel({
   mode: process.env.NODE_ENV,
   targets: {
     main: {
-      distDir: "dist",
+      distDir: "../electron-main/dist",
       context: "electron-main",
       outputFormat: "commonjs",
     },
