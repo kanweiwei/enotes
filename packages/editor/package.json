@@ -7,7 +7,7 @@
     "build:tailwind": "tailwind -o dist/tailwind.css",
     "serve": "cross-env NODE_ENV=development rspack serve",
     "dev": "concurrently \"npm:dev:tailwind\" \"npm:serve\"",
-    "build": "cross-env NODE_ENV=production rspack build && node scripts/copy.mjs && npm run build:tailwind"
+    "build": "cross-env NODE_ENV=production rspack build && npm run build:tailwind && node scripts/copy.mjs "
   },
   "dependencies": {
     "@radix-ui/colors": "^0.1.8",
