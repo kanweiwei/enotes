@@ -1,0 +1,17 @@
+{
+    "appId": "com.enotes.app",
+    "productName": "enotes",
+    "asar": true,
+    "files": [
+        "dist"
+    ],
+    "directories": {
+        "output": "build"
+    },
+    "dmg": {
+        "sign": false
+    },
+    "mac": {
+        "target": "dmg"
+    }
+}

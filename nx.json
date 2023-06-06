@@ -18,6 +18,12 @@
             "dependsOn": [
                 "^build"
             ]
+        },
+        "pack-app": {
+            "dependsOn": [
+                "^build",
+                "build"
+            ]
         }
     }
 }

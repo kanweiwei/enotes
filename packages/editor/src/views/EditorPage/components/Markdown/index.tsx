@@ -43,7 +43,7 @@ import {
   UnderlineExtension,
 } from "remirror/extensions";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { AppContext } from "~src/hooks/appContext";
+import { AppContext } from "../../../../hooks/appContext";
 import "remirror/styles/all.css";
 import "./style.less";
 

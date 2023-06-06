@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development parcel public/template.html",
-    "build": "cross-env NODE_ENV=production parcel public/template.html"
+    "dev": "cross-env NODE_ENV=development rspack serve",
+    "build": "cross-env NODE_ENV=production rspack build && node scripts/copy.mjs"
   },
   "dependencies": {
     "@radix-ui/colors": "^0.1.8",
@@ -12,24 +12,30 @@
     "@radix-ui/react-toolbar": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.5",
     "@reduxjs/toolkit": "^1.9.1",
+    "@remirror/core": "^2.0.16",
     "@remirror/extension-count": "^2.0.6",
     "@remirror/pm": "^2.0.0",
     "@remirror/react": "^2.0.11",
     "classnames": "^2.3.2",
+    "fs-extra": "^11.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remirror": "^2.0.10"
+    "remirror": "^2.0.32"
   },
   "devDependencies": {
     "@parcel/transformer-less": "^2.8.3",
+    "@rspack/cli": "^0.2.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "autoprefixer": "^10.4.12",
-    "postcss": "^8.0.9",
-    "postcss-import": "^15.0.0",
-    "tailwindcss": "^3.1.8",
+    "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
+    "less-loader": "^11.1.2",
     "parcel": "^2.8.3",
+    "postcss": "^8.4.24",
+    "postcss-import": "^15.0.0",
+    "postcss-loader": "^7.3.2",
+    "postcss-nesting": "^11.2.2",
+    "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
     "vitest": "^0.30.1"
   }

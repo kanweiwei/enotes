@@ -13,22 +13,20 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInSubFrames: true,
-      devTools: app.isPackaged ? false : true,
       contextIsolation: true,
+      sandbox: false,
       preload: path.join(app.getAppPath(), "dist", "preload.js"),
     },
   });
 
   app.isPackaged
-    ? win.loadFile(path.join(app.getAppPath(), "dist", "template.html"))
-    : win.loadURL("http://localhost:1234");
+    ? win.loadFile(
+        path.join(app.getAppPath(), "dist", "renderer", "index.html")
+      )
+    : win.loadURL("http://localhost:8080");
 
   win.webContents.on("dom-ready", () => {
     win.show();
-  });
-
-  win.webContents.openDevTools({
-    mode: "detach",
   });
 
   return win;

@@ -36,6 +36,19 @@ const template: ArgumentsType<typeof Menu.buildFromTemplate>[0] = [
       },
     ],
   },
+  {
+    label: "Help",
+    submenu: [
+      {
+        label: "Open Devtools",
+        accelerator: "CmdOrCtrl+Option+i",
+        click() {
+          const win = BrowserWindow.getFocusedWindow();
+          win?.webContents.openDevTools();
+        },
+      },
+    ],
+  },
 ];
 
 export function getMenu() {

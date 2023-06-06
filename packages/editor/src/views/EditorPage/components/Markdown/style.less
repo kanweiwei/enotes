@@ -137,15 +137,13 @@ ul {
     overflow: auto;
     margin-bottom: 20px;
     & > div {
-      width: 600px;
-      margin: 0 auto;
       min-height: 100%;
-      @media screen and (min-width: 1000px) {
-        width: 800px;
-      }
       &:focus-visible {
         outline: none;
       }
+    }
+    .remirror-editor.ProseMirror {
+      overflow: auto;
     }
     .remirror-list-item-checkbox {
       filter: hue-rotate(280deg);
@@ -155,8 +153,6 @@ ul {
   .editor-menu {
     @apply flex flex-row flex-nowrap items-center px-4 py-2;
     border-radius: 6px 6px 0 0;
-    width: 600px;
-    margin: 0 auto;
     @media screen and (min-width: 1000px) {
       width: 800px;
     }
@@ -178,4 +174,35 @@ ul {
     color: #333;
     display: flex;
   }
+}
+
+.node-placeholder(@content, @font-size) {
+  position: relative;
+  &:has(br)::after {
+    display: block;
+    position: absolute;
+    content: @content;
+    font-size: @font-size;
+    color: #bbb;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    user-select: none;
+    z-index: -1;
+  }
+}
+h1 {
+  .node-placeholder("Heading 1", 24px);
+}
+h2 {
+  .node-placeholder("Heading 2", 20px);
+}
+h3 {
+  .node-placeholder("Heading 3", 18px);
+}
+h4 {
+  .node-placeholder("Heading 4", 16px);
+}
+h5 {
+  .node-placeholder("Heading 5", 14px);
 }
