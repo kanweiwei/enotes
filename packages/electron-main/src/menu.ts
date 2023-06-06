@@ -37,6 +37,19 @@ const template: ArgumentsType<typeof Menu.buildFromTemplate>[0] = [
     ],
   },
   {
+    label: "View",
+    submenu: [
+      {
+        label: "Reload",
+        accelerator: "CmdOrCtrl+R",
+        click() {
+          const win = BrowserWindow.getFocusedWindow();
+          win?.webContents.reload();
+        },
+      },
+    ],
+  },
+  {
     label: "Help",
     submenu: [
       {
