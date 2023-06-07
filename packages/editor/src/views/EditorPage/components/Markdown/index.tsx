@@ -396,7 +396,7 @@ export const Markdown = () => {
   });
 
   return (
-    <div className="remirror-container">
+    <div className="remirror-container relative m-auto my-0 max-w-[840px] flex flex-col">
       <Remirror initialContent={state} manager={manager} hooks={hooks}>
         <Menu />
         <EditorComponent />
