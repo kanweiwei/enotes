@@ -12,6 +12,11 @@ module.exports = {
   builtins: {
     html: [{ template: "./public/index.html" }],
   },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   module: {
     rules: [
       {

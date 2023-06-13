@@ -9,13 +9,13 @@ ul {
   @apply pl-10;
 }
 .ToolbarRoot {
-  @apply flex w-full p-2 rounded bg-white shadow;
+  @apply flex w-full;
 }
 
 .ToolbarToggleItem,
 .ToolbarLink,
 .ToolbarButton {
-  @apply flex-none px-1 rounded inline-flex items-center justify-center rounded h-6 text-xs leading-3 text-slate-500;
+  @apply flex-none px-1 rounded inline-flex items-center justify-center h-6 text-xs leading-3 text-slate-500;
 }
 .ToolbarToggleItem:hover,
 .ToolbarLink:hover,
@@ -129,9 +129,8 @@ ul {
 
 .remirror-container {
   .remirror-editor-wrapper {
-    padding: 16px;
+    padding-top: 16px;
     flex: auto;
-    overflow: auto;
     margin-bottom: 20px;
     & > div {
       min-height: 100%;
@@ -148,11 +147,6 @@ ul {
   }
 
   .editor-menu {
-    @apply flex flex-row flex-nowrap items-center px-4 py-2;
-    border-radius: 6px 6px 0 0;
-    @media screen and (min-width: 1000px) {
-      width: 800px;
-    }
     .icon {
       @apply cursor-pointer shadow mr-2 rounded p-2;
       &.active {
@@ -163,18 +157,19 @@ ul {
       }
     }
   }
-  .footer {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    font-size: 12px;
-    color: #333;
-    display: flex;
-  }
 }
 
 .node-placeholder(@content, @font-size) {
   position: relative;
+  &::before {
+    position: absolute;
+    display: block;
+    content: "H1";
+    right: 100%;
+    z-index: -1;
+    font-size: @font-size;
+    color: #bbb;
+  }
   &:has(br)::after {
     display: block;
     position: absolute;
@@ -188,18 +183,35 @@ ul {
     z-index: -1;
   }
 }
-h1 {
-  .node-placeholder("Heading 1", 24px);
-}
-h2 {
-  .node-placeholder("Heading 2", 20px);
-}
-h3 {
-  .node-placeholder("Heading 3", 18px);
-}
-h4 {
-  .node-placeholder("Heading 4", 16px);
-}
-h5 {
-  .node-placeholder("Heading 5", 14px);
+
+.remirror-container {
+  ul {
+    list-style: disc;
+  }
+  ol {
+    list-style: decimal;
+  }
+  h1 {
+    font-size: 2em;
+    .node-placeholder("Heading 1", 24px);
+  }
+  h2 {
+    font-size: 1.5em;
+    .node-placeholder("Heading 2", 20px);
+  }
+  h3 {
+    font-size: 1.17em;
+    .node-placeholder("Heading 3", 18px);
+  }
+  h4 {
+    font-size: 1em;
+    .node-placeholder("Heading 4", 16px);
+  }
+  h5 {
+    font-size: 0.83em;
+    .node-placeholder("Heading 5", 14px);
+  }
+  p + p {
+    margin-top: 1.17em;
+  }
 }

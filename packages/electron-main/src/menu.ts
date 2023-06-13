@@ -37,6 +37,14 @@ const template: ArgumentsType<typeof Menu.buildFromTemplate>[0] = [
     ],
   },
   {
+    label: "Edit",
+    submenu: [
+      {
+        role: "selectAll",
+      },
+    ],
+  },
+  {
     label: "View",
     submenu: [
       {
@@ -53,12 +61,7 @@ const template: ArgumentsType<typeof Menu.buildFromTemplate>[0] = [
     label: "Help",
     submenu: [
       {
-        label: "Open Devtools",
-        accelerator: "CmdOrCtrl+Option+i",
-        click() {
-          const win = BrowserWindow.getFocusedWindow();
-          win?.webContents.openDevTools();
-        },
+        role: "toggleDevTools",
       },
     ],
   },

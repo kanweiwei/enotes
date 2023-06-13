@@ -1,24 +1,19 @@
-import React, {
-  MouseEventHandler,
-  useCallback,
-  useContext,
-  useEffect,
-} from "react";
-import { TextSelection } from "@remirror/pm/state";
-import { Node as PMNode } from "@remirror/pm/model";
 import {
   FontBoldIcon,
   FontItalicIcon,
   ListBulletIcon,
+  PinBottomIcon,
   StrikethroughIcon,
   TextAlignCenterIcon,
   TextAlignLeftIcon,
   TextAlignRightIcon,
   UnderlineIcon,
-  PinBottomIcon,
 } from "@radix-ui/react-icons";
 import * as Toolbar from "@radix-ui/react-toolbar";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { CountExtension } from "@remirror/extension-count";
+import { Node as PMNode, Slice } from "@remirror/pm/model";
+import { EditorState, TextSelection } from "@remirror/pm/state";
 import {
   EditorComponent,
   Remirror,
@@ -29,6 +24,14 @@ import {
   useRemirror,
   useRemirrorContext,
 } from "@remirror/react";
+import React, {
+  MouseEventHandler,
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import {
   BoldExtension,
   BulletListExtension,
@@ -42,10 +45,10 @@ import {
   TaskListExtension,
   UnderlineExtension,
 } from "remirror/extensions";
-import * as Tooltip from "@radix-ui/react-tooltip";
-import { AppContext } from "../../../../hooks/appContext";
 import "remirror/styles/all.css";
+import { AppContext } from "../../../../hooks/appContext";
 import "./style.less";
+import { createPortal } from "react-dom";
 
 async function saveContent(content: string, filePath?: string) {
   let res = true;
@@ -90,7 +93,49 @@ function useSaveHook() {
   return state;
 }
 
-const hooks = [useSaveHook];
+const useCopyHook = () => {
+  const { getState, schema, manager } = useRemirrorContext({
+    autoUpdate: true,
+  });
+  const helpers = useHelpers();
+  useKeymap(
+    "Mod-c",
+    useCallback(() => {
+      const state = getState();
+      const selection = state.selection;
+      function createNewEditorState(state: EditorState, slice: Slice) {
+        const { tr, schema } = state;
+        tr.replace(0, tr.doc.content.size, slice);
+        const newState = EditorState.create({
+          schema,
+          doc: tr.doc,
+          selection: tr.selection,
+        });
+        return newState;
+      }
+      const newState = createNewEditorState(getState(), selection.content());
+      const text = helpers.getMarkdown(newState);
+      navigator.clipboard.writeText(text);
+      return true;
+    }, [helpers])
+  );
+};
+
+const usePasteHook = () => {
+  const commands = useCommands();
+  useKeymap(
+    "Mod-v",
+    useCallback(() => {
+      void (async () => {
+        const text = await navigator.clipboard.readText();
+        commands.insertMarkdown(text);
+      })();
+      return true;
+    }, [])
+  );
+};
+
+const hooks = [useSaveHook, useCopyHook, usePasteHook];
 
 const Menu = () => {
   const { toggleItalic, toggleMark, insertMarkdown } = useCommands();
@@ -212,7 +257,7 @@ const Menu = () => {
   }, []);
 
   return (
-    <div className="editor-menu">
+    <div className="editor-menu flex flex-row flex-nowrap items-center p-2 rounded xl:w-[840px] bg-white z-10 sticky top-0 shadow">
       <Toolbar.Root className="ToolbarRoot" aria-label="Formatting options">
         <Toolbar.ToggleGroup type="multiple" aria-label="Text formatting">
           <Toolbar.ToggleItem
@@ -360,12 +405,15 @@ const Menu = () => {
   );
 };
 
+interface FooterProps {
+  parent: RefObject<HTMLDivElement | null>;
+}
 function Footer() {
   const { getCharacterCount } = useHelpers();
   const { getState } = useRemirrorContext({ autoUpdate: true });
   const { filePath } = useContext(AppContext);
   return (
-    <div className="footer">
+    <div className="footer sticky bottom-0 text-xs text-slate-700 flex bg-white">
       <div className="charsCount">chars: {getCharacterCount(getState())}</div>
       <div className="filePath">{window.$$filePath$$ || filePath || ""}</div>
     </div>
@@ -396,12 +444,17 @@ export const Markdown = () => {
   });
 
   return (
-    <div className="remirror-container relative m-auto my-0 max-w-[840px] flex flex-col">
-      <Remirror initialContent={state} manager={manager} hooks={hooks}>
-        <Menu />
-        <EditorComponent />
-        <Footer />
-      </Remirror>
+    <div className="relative flex-grow h-full overflow-auto">
+      <header className="app-header h-[40px] bg-white border-b z-10"></header>
+      <div className="overflow-auto" style={{ height: "calc(100% - 40px)" }}>
+        <div className="remirror-container flex flex-col h-full px-7 relative m-auto my-0 max-w-[840px]">
+          <Remirror initialContent={state} manager={manager} hooks={hooks}>
+            <Menu />
+            <EditorComponent />
+            <Footer />
+          </Remirror>
+        </div>
+      </div>
     </div>
   );
 };

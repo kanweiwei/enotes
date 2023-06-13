@@ -5,13 +5,13 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node config/preload.mjs",
-    "build": "cross-env NODE_ENV=production node config/preload.mjs"
+    "dev": "rspack build",
+    "build": "cross-env NODE_ENV=production rspack build"
   },
   "devDependencies": {
+    "@rspack/cli": "^0.2.2",
     "cross-env": "^7.0.3",
-    "parcel": "^2.8.3",
-    "typescript": "^5.0.4",
-    "vitest": "^0.30.1"
+    "electron": "21.3.5",
+    "typescript": "^5.0.4"
   }
 }

@@ -1,7 +1,10 @@
+import "reflect-metadata";
 import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
 import { initBridge } from "./bridge";
 import { getMenu } from "./menu";
+import { ioc } from "./ioc";
+import { LocalDB } from "./db";
 
 Menu.setApplicationMenu(null);
 
@@ -10,9 +13,13 @@ function createWindow() {
     width: 800,
     height: 600,
     show: false,
+    frame: false,
+    roundedCorners: true,
+    titleBarStyle: "hidden",
+    trafficLightPosition: { x: 12, y: 14 },
     webPreferences: {
-      nodeIntegration: true,
-      nodeIntegrationInSubFrames: true,
+      nodeIntegration: false,
+      nodeIntegrationInSubFrames: false,
       contextIsolation: true,
       sandbox: false,
       preload: path.join(app.getAppPath(), "dist", "preload.js"),
@@ -33,6 +40,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  ioc.get(LocalDB).init();
   createWindow();
   initBridge();
   Menu.setApplicationMenu(getMenu());

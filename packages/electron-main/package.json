@@ -4,24 +4,29 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node config/main.mjs && electron .",
-    "build": "cross-env NODE_ENV=production node config/main.mjs",
+    "dev": "wait-on tcp:8080 && cross-env NODE_ENV=development rspack build && electron .",
+    "build": "cross-env NODE_ENV=production rspack build",
     "test": "vitest",
     "pack-app": "electron-builder --config electron-builder.json --mac --arm64"
   },
   "devDependencies": {
+    "@rspack/cli": "^0.2.2",
     "@types/node": "^18.7.23",
     "buffer": "^5.5.0",
     "cross-env": "^7.0.3",
     "electron": "21.3.5",
     "electron-builder": "^23.6.0",
-    "parcel": "^2.8.3",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "typescript": "^5.0.4",
     "vitest": "^0.30.1"
   },
   "dependencies": {
-    "@enotes/electron-preload": "*"
+    "@enotes/electron-preload": "*",
+    "inversify": "^6.0.1",
+    "knex": "^2.4.2",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.1.6",
+    "wait-on": "^7.0.1"
   }
 }

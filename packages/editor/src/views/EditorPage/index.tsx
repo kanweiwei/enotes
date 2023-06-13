@@ -18,7 +18,7 @@ export const EditorPage = () => {
 
   return (
     <AppContext.Provider value={{ filePath, updateFilePath }}>
-      <div className="editor min-h-full flex flex-row">
+      <div className="editor h-full flex flex-row flex-nowrap">
         <LeftPanel />
         <Markdown />
       </div>

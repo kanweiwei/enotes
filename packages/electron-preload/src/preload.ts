@@ -10,4 +10,11 @@ contextBridge.exposeInMainWorld("Bridge", {
   getFileContent: (filePath: string) => {
     return ipcRenderer.invoke("getFileContent", filePath);
   },
+  getAllBooks: () => ipcRenderer.invoke("getAllBooks"),
+  createBook: (fileName: string) => {
+    return ipcRenderer.invoke("createBook", fileName);
+  },
+  deleteBook: (id: number) => ipcRenderer.invoke("deleteBook", id),
+  updateBook: (data: { id: number; name: string }) =>
+    ipcRenderer.invoke("updateBook", data),
 });
