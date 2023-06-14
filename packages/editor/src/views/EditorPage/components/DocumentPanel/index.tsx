@@ -3,6 +3,7 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
@@ -32,7 +33,7 @@ export const DocumentsPanel = () => {
 
   const [documents, setDocuments] = useState<DocumentView[]>([]);
 
-  const handleCreateBook = useCallback(() => {
+  const handleCreateDocument = useCallback(() => {
     if (documents.some((n) => n.id == 0)) return;
     const newDocuments = documents.slice();
     newDocuments.push({
@@ -112,9 +113,65 @@ export const DocumentsPanel = () => {
 
   const handleStartCreateNewPage = useCallback(
     async (doc: DocumentView, index: number) => {
-      await window.Bridge?.createPage({ documentId: doc.id, name: "article" });
+      const row = await window.Bridge?.createPage({
+        documentId: doc.id,
+        name: "page",
+      });
+      const newDocuments = documents.slice();
+      newDocuments[index].pages.push({ ...row, editable: false });
+      setDocuments(newDocuments);
     },
-    []
+    [documents]
+  );
+
+  const handleStartRenamePage = useCallback(
+    (pageIndex: number, index: number) => {
+      const newDocuments = documents.slice();
+      newDocuments[index].pages[pageIndex].editable = true;
+      setDocuments(newDocuments);
+    },
+    [documents]
+  );
+
+  const handleDeletePage = useCallback(
+    async (page: PageView, pageIndex: number, index: number) => {
+      if (await window.Bridge?.deletePage(page.id)) {
+        const newDocuments = documents.slice();
+        newDocuments[index].pages.splice(pageIndex, 1);
+        setDocuments(newDocuments);
+      }
+    },
+    [documents]
+  );
+
+  const handleRenamePage = useCallback(
+    async (
+      e: React.MouseEvent<HTMLElement>,
+      value: string,
+      page: PageView,
+      pageIndex: number,
+      docIndex: number
+    ) => {
+      value = value.trim();
+      const newDocs = documents.slice();
+      if (value) {
+        if (await window.Bridge?.updatePageName(page.id, value)) {
+          newDocs[docIndex].pages[pageIndex].name = value;
+        }
+      }
+      newDocs[docIndex].pages[pageIndex].editable = false;
+      setDocuments(newDocs);
+    },
+    [documents]
+  );
+
+  const handleCancelRenamePage = useCallback(
+    (pageIndex: number, index: number) => {
+      const newDocuments = documents.slice();
+      newDocuments[index].pages[pageIndex].editable = false;
+      setDocuments(newDocuments);
+    },
+    [documents]
   );
 
   useMount(() => {
@@ -143,15 +200,15 @@ export const DocumentsPanel = () => {
         <div className="flex felx-row items-center gap-2 select-none">
           <span onClick={() => setCollapsed(!isCollapsed)}>
             {isCollapsed ? (
-              <CaretRightIcon className="cursor-pointer" />
+              <CaretRightIcon className="" />
             ) : (
-              <CaretDownIcon className="cursor-pointer" />
+              <CaretDownIcon className="" />
             )}
           </span>{" "}
           <ArchiveIcon /> Documents
         </div>
         <div className="btns">
-          <PlusIcon className="cursor-pointer" onClick={handleCreateBook} />
+          <PlusIcon className="" onClick={handleCreateDocument} />
         </div>
       </div>
       <div className="panel-content">
@@ -168,7 +225,7 @@ export const DocumentsPanel = () => {
                 </div>
               ) : (
                 <ContextMenu>
-                  <ContextMenuTrigger className="group h-7 hover:bg-gray-200 cursor-pointer m-2 p-2 flex items-center rounded text-ellipsis overflow-hidden whitespace-nowrap group-data-[state=open]:bg-gray-200 select-none">
+                  <ContextMenuTrigger className="group h-7 hover:bg-neutral-300 active:bg-neutral-400 m-2 p-2 flex items-center rounded text-ellipsis overflow-hidden whitespace-nowrap group-data-[state=open]:bg-gray-200 select-none">
                     <ReaderIcon className="mr-1 flex-none" />
                     <div
                       className="flex-auto overflow-hidden text-ellipsis"
@@ -180,7 +237,26 @@ export const DocumentsPanel = () => {
                   <ContextMenuContent className="bg-white">
                     <ContextMenuItem>
                       <div
-                        className="flex flex-row items-center cursor-pointer"
+                        className="flex flex-row items-center text-xs"
+                        onClick={() => handleStartRename(n, index)}
+                      >
+                        <EditIcon width={14} height={14} className="mr-2" />
+                        <span>Rename</span>
+                      </div>
+                    </ContextMenuItem>
+                    <ContextMenuItem>
+                      <div
+                        className="flex flex-row items-center text-xs"
+                        onClick={() => handleStartCreateNewPage(n, index)}
+                      >
+                        <FileTextIcon width={14} height={14} className="mr-2" />
+                        <span>New Page</span>
+                      </div>
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem>
+                      <div
+                        className="flex flex-row items-center text-xs"
                         onClick={() => handleDeleteDocument(n, index)}
                       >
                         <CrumpledPaperIcon
@@ -191,46 +267,62 @@ export const DocumentsPanel = () => {
                         <span>Delete</span>
                       </div>
                     </ContextMenuItem>
-                    <ContextMenuItem>
-                      <div
-                        className="flex flex-row items-center cursor-pointer"
-                        onClick={() => handleStartRename(n, index)}
-                      >
-                        <EditIcon width={14} height={14} className="mr-2" />
-                        <span>Rename</span>
-                      </div>
-                    </ContextMenuItem>
-                    <ContextMenuItem>
-                      <div
-                        className="flex flex-row items-center cursor-pointer"
-                        onClick={() => handleStartCreateNewPage(n, index)}
-                      >
-                        <FileTextIcon width={14} height={14} className="mr-2" />
-                        <span>New Page</span>
-                      </div>
-                    </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
               )}
               <div className="pages-container">
-                {n.pages.map((article, articleIndex) => {
+                {n.pages.map((page, pageIndex) => {
+                  if (page.editable) {
+                    return (
+                      <div className="px-4" key={page.id}>
+                        <EditableInput
+                          defaultValue={page.name}
+                          handleOk={(e, value) =>
+                            handleRenamePage(e, value, page, pageIndex, index)
+                          }
+                          handleCancel={() =>
+                            handleCancelRenamePage(pageIndex, index)
+                          }
+                        />
+                      </div>
+                    );
+                  }
                   return (
-                    <ContextMenu>
+                    <ContextMenu key={page.id}>
                       <ContextMenuTrigger>
-                        <div className="group h-7 hover:bg-gray-200 cursor-pointer m-2 p-2 pl-7 flex items-center rounded text-ellipsis overflow-hidden whitespace-nowrap group-data-[state=open]:bg-gray-200 select-none">
+                        <div className="group h-7 hover:bg-neutral-300 active:bg-neutral-400  m-2 p-2 pl-4 flex items-center rounded  group-data-[state=open]:bg-gray-200 select-none">
                           <FileTextIcon
                             width={14}
                             height={14}
                             className="mr-2"
                           />
-                          <div>{article.name}</div>
+                          <div className="text-ellipsis overflow-hidden whitespace-nowrap">
+                            {page.name}
+                          </div>
                         </div>
                       </ContextMenuTrigger>
                       <ContextMenuContent>
                         <ContextMenuItem>
-                          <div className="flex flex-row items-center cursor-pointer">
+                          <div
+                            className="flex flex-row items-center text-xs"
+                            onClick={() =>
+                              handleStartRenamePage(pageIndex, index)
+                            }
+                          >
                             <EditIcon width={14} height={14} className="mr-2" />
                             <span>Rename</span>
+                          </div>
+                        </ContextMenuItem>
+                        <ContextMenuSeparator />
+                        <ContextMenuItem>
+                          <div
+                            className="flex flex-row items-center text-xs"
+                            onClick={() =>
+                              handleDeletePage(page, pageIndex, index)
+                            }
+                          >
+                            <EditIcon width={14} height={14} className="mr-2" />
+                            <span>Delete</span>
                           </div>
                         </ContextMenuItem>
                       </ContextMenuContent>

@@ -445,15 +445,12 @@ export const Markdown = () => {
 
   return (
     <div className="relative flex-grow h-full overflow-auto">
-      <header className="app-header h-[40px] bg-white border-b z-10"></header>
-      <div className="overflow-auto" style={{ height: "calc(100% - 40px)" }}>
-        <div className="remirror-container flex flex-col h-full px-7 relative m-auto my-0 max-w-[840px]">
-          <Remirror initialContent={state} manager={manager} hooks={hooks}>
-            <Menu />
-            <EditorComponent />
-            <Footer />
-          </Remirror>
-        </div>
+      <div className="remirror-container flex flex-col h-full px-7 relative m-auto my-0 max-w-[840px]">
+        <Remirror initialContent={state} manager={manager} hooks={hooks}>
+          <Menu />
+          <EditorComponent />
+          <Footer />
+        </Remirror>
       </div>
     </div>
   );

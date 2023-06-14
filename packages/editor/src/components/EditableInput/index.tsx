@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 
 interface EditableInputProps {
   defaultValue?: string;
-  handleOk?: (e: React.MouseEvent<HTMLElement>, value?: string) => void;
+  handleOk?: (e: React.MouseEvent<HTMLElement>, value: string) => void;
   handleCancel?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
@@ -24,18 +24,18 @@ export const EditableInput = (props: EditableInputProps) => {
     <div className="flex flex-row gap-2 items-center">
       <Input
         ref={input}
-        className="flex-auto h-7 bg-white w-auto focus-visible:ring-0"
+        className="flex-auto h-7 bg-white focus-visible:ring-0"
         defaultValue={defaultValue}
         autoFocus
       />
       <i
-        className="hover:bg-gray-300 cursor-pointer rounded"
-        onClick={(e) => handleOk(e, input.current?.value)}
+        className="hover:bg-gray-200 active:bg-gray-300  rounded"
+        onClick={(e) => handleOk(e, input.current!.value)}
       >
         <CheckIcon width={20} height={20} />
       </i>
       <i
-        className="hover:bg-gray-300 cursor-pointer rounded"
+        className="hover:bg-gray-200 active:bg-gray-300  rounded"
         onClick={handleCancel}
       >
         <Cross2Icon width={20} height={20} />

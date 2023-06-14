@@ -9,6 +9,8 @@ declare interface Window {
     updateDocument: (data: { id: number; name: string }) => Promise<boolean>;
     deleteDocument: (id: number) => Promise<boolean>;
     createPage: (data: { documentId: number; name: string }) => Promise<Page>;
+    deletePage: (id: number) => Promise<boolean>;
+    updatePageName: (id: number, name: string) => Promise<boolean>;
   };
   $$filePath$$?: string;
   $$fileContent$$?: string;

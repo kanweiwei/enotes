@@ -87,4 +87,12 @@ export function initBridge() {
       return await ioc.get(PagesController).create(data);
     }
   );
+
+  ipcMain.handle("deletePage", async (e, id: number) => {
+    return await ioc.get(PagesController).delete(id);
+  });
+
+  ipcMain.handle("updatePageName", async (e, id: number, name: string) => {
+    return await ioc.get(PagesController).updateName(id, name);
+  });
 }

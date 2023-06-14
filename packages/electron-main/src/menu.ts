@@ -39,9 +39,10 @@ const template: ArgumentsType<typeof Menu.buildFromTemplate>[0] = [
   {
     label: "Edit",
     submenu: [
-      {
-        role: "selectAll",
-      },
+      { role: "copy" },
+      { role: "paste" },
+      { role: "pasteAndMatchStyle" },
+      { role: "selectAll" },
     ],
   },
   {

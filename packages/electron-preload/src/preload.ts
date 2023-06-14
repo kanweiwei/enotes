@@ -20,6 +20,9 @@ const bridge: typeof window.Bridge = {
     ipcRenderer.invoke("updateDocument", data),
   createPage: (data: { documentId: number; name: string }) =>
     ipcRenderer.invoke("createPage", data),
+  deletePage: (id: number) => ipcRenderer.invoke("deletePage", id),
+  updatePageName: (id: number, name: string) =>
+    ipcRenderer.invoke("updatePageName", id, name),
 };
 
 contextBridge.exposeInMainWorld("Bridge", bridge);
