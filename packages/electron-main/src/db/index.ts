@@ -18,21 +18,21 @@ export class LocalDB {
   }
 
   async sync() {
-    await this.db.schema.hasTable("books").then((exist) => {
+    await this.db.schema.hasTable("documents").then((exist) => {
       if (exist) return;
-      return this.db.schema.createTable("books", (table) => {
+      return this.db.schema.createTable("documents", (table) => {
         table.bigIncrements("id", { primaryKey: true });
         table.string("name");
         table.timestamps(true, true);
       });
     });
-    await this.db.schema.hasTable("articles").then((exist) => {
+    await this.db.schema.hasTable("pages").then((exist) => {
       if (exist) return;
-      return this.db.schema.createTable("articles", (table) => {
+      return this.db.schema.createTable("pages", (table) => {
         table.bigIncrements("id", { primaryKey: true });
         table.string("name");
         table.text("content");
-        table.bigInteger("book_id");
+        table.bigInteger("documentId");
         table.integer("sort_order");
         table.timestamps(true, true);
       });

@@ -10,38 +10,43 @@ import {
   ArchiveIcon,
   PlusIcon,
   CaretDownIcon,
-  CheckIcon,
-  Cross2Icon,
   ReaderIcon,
   CrumpledPaperIcon,
+  FileTextIcon,
 } from "@radix-ui/react-icons";
 import { useMount } from "ahooks";
 import { EditIcon } from "lucide-react";
 import React, { useCallback, useState } from "react";
 
-interface Document {
-  id: number;
-  name: string;
+interface DocumentView extends DocumentDto {
+  editable: boolean;
+  pages: PageView[];
+}
+
+interface PageView extends PageDto {
   editable: boolean;
 }
 
 export const DocumentsPanel = () => {
   const [isCollapsed, setCollapsed] = useState(false);
 
-  const [documents, setDocuments] = useState<
-    Array<{ name: string; id: number; editable: boolean }>
-  >([]);
+  const [documents, setDocuments] = useState<DocumentView[]>([]);
 
   const handleCreateBook = useCallback(() => {
     if (documents.some((n) => n.id == 0)) return;
     const newDocuments = documents.slice();
-    newDocuments.push({ name: "document", id: 0, editable: true });
+    newDocuments.push({
+      name: "document",
+      id: 0,
+      editable: true,
+      pages: [],
+    });
     setDocuments(newDocuments);
   }, [documents]);
 
   const handleDeleteDocument = useCallback(
-    async (item: Document, index: number) => {
-      if (await window.Bridge?.deleteBook(item.id)) {
+    async (item: DocumentView, index: number) => {
+      if (await window.Bridge?.deleteDocument(item.id)) {
         const newDocuments = documents.slice();
         newDocuments.splice(index, 1);
         setDocuments(newDocuments);
@@ -51,7 +56,7 @@ export const DocumentsPanel = () => {
   );
 
   const handleStartRename = useCallback(
-    (item: Document, index: number) => {
+    (item: DocumentView, index: number) => {
       const newDocuments = documents.slice();
       newDocuments[index].editable = true;
       setDocuments(newDocuments);
@@ -60,13 +65,12 @@ export const DocumentsPanel = () => {
   );
 
   const handleRename = useCallback(
-    async (n: Document, value?: string) => {
+    async (n: DocumentView, value?: string) => {
       const newDocuments = documents.slice();
       const idx = newDocuments.findIndex((item) => item.id == n.id);
       if (n.id == 0 && value) {
         // create
-        const row = await window.Bridge?.createBook(value);
-        console.log(row);
+        const row = await window.Bridge?.createDocument(value);
         if (!row) {
           const newDocuments = documents.slice();
           newDocuments.splice(idx, 1);
@@ -74,6 +78,7 @@ export const DocumentsPanel = () => {
           return;
         }
         newDocuments.splice(idx, 1, {
+          ...n,
           ...row,
           editable: false,
         });
@@ -81,7 +86,7 @@ export const DocumentsPanel = () => {
       } else {
         if (n.name !== value && value && value.trim().length > 0) {
           // update
-          if (await window.Bridge?.updateBook({ ...n, name: value })) {
+          if (await window.Bridge?.updateDocument({ ...n, name: value })) {
             newDocuments[idx].name = value;
           }
         }
@@ -93,7 +98,7 @@ export const DocumentsPanel = () => {
   );
 
   const handleCancelRenameDocument = useCallback(
-    (n: Document, index: number) => {
+    (n: DocumentView, index: number) => {
       const newDocuments = documents.slice();
       if (n.id == 0) {
         newDocuments.splice(index, 1);
@@ -105,15 +110,26 @@ export const DocumentsPanel = () => {
     [documents]
   );
 
+  const handleStartCreateNewPage = useCallback(
+    async (doc: DocumentView, index: number) => {
+      await window.Bridge?.createPage({ documentId: doc.id, name: "article" });
+    },
+    []
+  );
+
   useMount(() => {
     void (async () => {
-      const res = await window.Bridge?.getAllBooks();
+      const res = await window.Bridge?.getWithPages();
       if (res) {
         setDocuments(
           res.map((n) => {
             return {
               ...n,
               editable: false,
+              pages: n.pages.map((p) => ({
+                ...p,
+                editable: false,
+              })),
             };
           })
         );
@@ -141,7 +157,7 @@ export const DocumentsPanel = () => {
       <div className="panel-content">
         {documents.map((n, index) => {
           return (
-            <div className="" data-id={n.id} data-name={n.name} key={n.id}>
+            <div key={n.id}>
               {n.editable ? (
                 <div className="px-2 py-2 border-b border-t">
                   <EditableInput
@@ -184,9 +200,44 @@ export const DocumentsPanel = () => {
                         <span>Rename</span>
                       </div>
                     </ContextMenuItem>
+                    <ContextMenuItem>
+                      <div
+                        className="flex flex-row items-center cursor-pointer"
+                        onClick={() => handleStartCreateNewPage(n, index)}
+                      >
+                        <FileTextIcon width={14} height={14} className="mr-2" />
+                        <span>New Page</span>
+                      </div>
+                    </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
               )}
+              <div className="pages-container">
+                {n.pages.map((article, articleIndex) => {
+                  return (
+                    <ContextMenu>
+                      <ContextMenuTrigger>
+                        <div className="group h-7 hover:bg-gray-200 cursor-pointer m-2 p-2 pl-7 flex items-center rounded text-ellipsis overflow-hidden whitespace-nowrap group-data-[state=open]:bg-gray-200 select-none">
+                          <FileTextIcon
+                            width={14}
+                            height={14}
+                            className="mr-2"
+                          />
+                          <div>{article.name}</div>
+                        </div>
+                      </ContextMenuTrigger>
+                      <ContextMenuContent>
+                        <ContextMenuItem>
+                          <div className="flex flex-row items-center cursor-pointer">
+                            <EditIcon width={14} height={14} className="mr-2" />
+                            <span>Rename</span>
+                          </div>
+                        </ContextMenuItem>
+                      </ContextMenuContent>
+                    </ContextMenu>
+                  );
+                })}
+              </div>
             </div>
           );
         })}

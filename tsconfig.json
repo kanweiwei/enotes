@@ -13,6 +13,10 @@
     "types": [
       "node"
     ],
+    "typeRoots": [
+      "./typings",
+      "node_modules/@types"
+    ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

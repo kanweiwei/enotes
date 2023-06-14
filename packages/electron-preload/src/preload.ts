@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld("Bridge", {
+const bridge: typeof window.Bridge = {
   export: (content: string) => {
     return ipcRenderer.invoke("export", content);
   },
@@ -10,11 +10,16 @@ contextBridge.exposeInMainWorld("Bridge", {
   getFileContent: (filePath: string) => {
     return ipcRenderer.invoke("getFileContent", filePath);
   },
-  getAllBooks: () => ipcRenderer.invoke("getAllBooks"),
-  createBook: (fileName: string) => {
-    return ipcRenderer.invoke("createBook", fileName);
+  getDocuments: () => ipcRenderer.invoke("getDocuments"),
+  getWithPages: () => ipcRenderer.invoke("getWithPages"),
+  createDocument: (fileName: string) => {
+    return ipcRenderer.invoke("createDocument", fileName);
   },
-  deleteBook: (id: number) => ipcRenderer.invoke("deleteBook", id),
-  updateBook: (data: { id: number; name: string }) =>
-    ipcRenderer.invoke("updateBook", data),
-});
+  deleteDocument: (id: number) => ipcRenderer.invoke("deleteDocument", id),
+  updateDocument: (data: { id: number; name: string }) =>
+    ipcRenderer.invoke("updateDocument", data),
+  createPage: (data: { documentId: number; name: string }) =>
+    ipcRenderer.invoke("createPage", data),
+};
+
+contextBridge.exposeInMainWorld("Bridge", bridge);
